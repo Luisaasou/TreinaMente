@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UFT-8">
+    <title> Cadastro dos Usuarios</title>
+</head>
+<body>
+    <h1>Criar Cadastro</h1>
+ 
+    <from id="fromCadastro">
+        <label from="nome">Nome:</label><br>
+        <input type="text" id="nome" required><br><br>
+ 
+        <label from="email">email:</label><br>
+        <input type="email" id="email" required><br><br>
+ 
+        <label from="senha">senha (minimo 8 caracteres):</label><br>
+        <input type="password" id="senha" minlength="8" required><br><br>
+ 
+        ><button type="submit">Cadastrar</button>
+    </from>
+    <p id="Feedback"></p>
+    <script>
+        document.getElementById('fromCadastro').addEventListener('submit',async(e)=>{
+            e.preventDefault();
+            const nome = document.getElementById('nome').value;
+            const email = document.getElementById('email').value;
+            const senha = document.getElementById('senha').value;
+            const FeedbackEl = document.getElementById('feedback');
+ 
+            if (senha.length<8){
+                mensagemEl.textContent ="A senha deve conter no minimo 8 caracteres.";
+                mensagemEl.style.color ="red";
+                return;
+            }
+ 
+            try{
+                const resposta = await fetch('http://localhost:8080/api/cadastrar',{
+                    method :'POST',
+                    headers : {'Content-Type':'aplication/jason'},
+                    body : JSON.stringify({nome,email,senha})
+                });
+                const resultado = await resposta.json();
+ 
+                if(resposta.ok){
+                    mensagemEl.textContent = resultado.mensagem;
+                    mensagemEl.style.color = "green";
+                    document.getElementById('fromCadastro'). reset();
+                } else{
+                     mensagemEl.textContent = resultado.mensagem;
+                    mensagemEl.style.color = "red";
+                } catch (erro) {
+                    mensagemEl.textContent = "erro na conexao do servidor.";
+                    mensagemEl.style.color = "red";
+                }
+           
+        });
+    </script>
+</body>
+</html>
+ 
